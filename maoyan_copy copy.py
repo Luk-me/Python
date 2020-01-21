@@ -3,6 +3,8 @@
 import requests
 import threading
 from bs4 import BeautifulSoup
+from fake_useragent import UserAgent
+
 
 
 def main(page, num):
@@ -29,23 +31,19 @@ def main(page, num):
             'dl', attrs={'class': 'board-wrapper'}).findAll('dd')
         for j in main:
             num += 1
-            name = j.find('div', attrs={
-                          'class': 'board-item-main'}).find('p', attrs={'class': 'name'}).find('a').text
+            name = j.find('div', attrs={'class': 'board-item-main'}).find('p', attrs={'class': 'name'}).find('a').text
             print(str(num)+': '+name)
             # f.write(str(num)+': '+name)
             # f.write('\r\n')
-            star = j.find('div', attrs={
-                          'class': 'board-item-main'}).find('p', attrs={'class': 'star'}).text
+            star = j.find('div', attrs={'class': 'board-item-main'}).find('p', attrs={'class': 'star'}).text
             # print('    '+star.strip())
             # f.write(star.strip())
             # f.write('\r\n')
-            releasetime = j.find('div', attrs={
-                                 'class': 'board-item-main'}).find('p', attrs={'class': 'releasetime'}).text
+            releasetime = j.find('div', attrs={'class': 'board-item-main'}).find('p', attrs={'class': 'releasetime'}).text
             print('    '+releasetime+'\r\n')
             # f.write(releasetime)
             # f.write('\r\n')
-            url_child = j.find('div', attrs={'class': 'board-item-main'}).find(
-                'p', attrs={'class': 'name'}).find('a').get('href')
+            url_child = j.find('div', attrs={'class': 'board-item-main'}).find('p', attrs={'class': 'name'}).find('a').get('href')
             url_child = "https://maoyan.com"+url_child
             r_child = requests.get(url=url_child, headers=headers,proxies=proxy)
             r_child.encoding = "UTF-8"

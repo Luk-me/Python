@@ -1,3 +1,19 @@
+import requests,random
+
+
+def get_random_proxies(ip_list):
+    proxy_list = []
+    for ip in ip_list:
+        proxy_list.append(ip)
+    proxy_ip = random.choice(proxy_list)
+    proxies = {'http': 'http://'+proxy_ip, 'https': 'https://'+proxy_ip}
+    return proxies
+
+
+url="http://httpbin.org/ip"
+
+
+ip_list=[
 "209.43.33.98:8080",
 "35.222.171.32:80",
 "167.172.248.53:3128",
@@ -77,6 +93,12 @@
 "113.28.129.60:80",
 "163.180.117.236:8080",
 "103.99.177.248:3128",
-<class 'dict'>
-209.43.33.98:8080不可用
-209.43.33.98:8080不可用
+]
+num=1
+for i in ip_list:
+    proxies=get_random_proxies(ip_list)
+    print(proxies)
+    # r=requests.get(url,proxies)
+    # print(str(num)+' : '+proxy_ip+' == '+str(r.status_code))
+    num+=1
+
