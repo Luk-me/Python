@@ -3,6 +3,7 @@ import time
 import threading
 import os
 import random
+import re
 from bs4 import BeautifulSoup
 
 
@@ -20,17 +21,18 @@ def get_img_url(down_dir,url):
         print(img_title)
         filename=img_title
         f=requests.get(img_url)
-        with open(down_dir+filename+".jpg",'wb')as g:
-            for j in f.iter_content(10240):
+        result = re.findall(r'\.[^.\\/:*?"<>|\r\n]+$', img_url)
+        with open(down_dir+filename+result[0],'wb')as g:
+            for j in f.iter_content(1024):
                 g.write(j)
 
 def main():
     down_dir=os.path.join(os.getcwd(),'emjoys/')
     if not os.path.exists(down_dir):
         os.mkdir(down_dir)
-        print("图片储存在"+down_dir+".")
+        print("图片储存在"+down_dir+"中.")
     # get_img_url(down_dir)
-    for page in range(2,3000):
+    for page in range(1,3000):
         url="https://www.doutula.com/photo/list/?page="+str(page)
         t=threading.Thread(target=get_img_url,args=(down_dir,url))
         t.start()
